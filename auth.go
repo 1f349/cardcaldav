@@ -3,7 +3,9 @@ package cardcaldav
 import (
 	"cardcaldav/database"
 	"context"
+	"database/sql"
 	"errors"
+	"github.com/charmbracelet/log"
 	"golang.org/x/crypto/bcrypt"
 	"net/http"
 	"strings"
@@ -34,6 +36,21 @@ type ProviderMiddleware interface {
 
 var authError = errors.New("auth context error")
 
+func NewAuth(dbStr string, logger *log.Logger) *Auth {
+	dbOpen, err := sql.Open("mysql", dbStr)
+	if err != nil {
+		logger.Fatal("sql.Open()", "err", err)
+	}
+	err = dbOpen.Ping()
+	if err != nil {
+		logger.Fatal("db.Ping()", "err", err)
+	}
+
+	dbQueries := database.New(dbOpen)
+
+	return &Auth{DB: dbQueries}
+}
+
 type Auth struct {
 	DB *database.Queries
 }
@@ -58,7 +75,6 @@ func (a *Auth) Middleware(next http.Handler) http.Handler {
 		}
 
 		r = r.WithContext(NewContext(r.Context(), &Context{UserName: username}))
-		r.BasicAuth()
 		next.ServeHTTP(w, r)
 	})
 }
