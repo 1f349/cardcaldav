@@ -1,0 +1,10 @@
+version: "2"
+sql:
+  - engine: mysql
+    queries: database/queries
+    schema: database/models
+    gen:
+      go:
+        package: "database"
+        out: "database"
+        emit_json_tags: true
