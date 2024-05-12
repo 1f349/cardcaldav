@@ -58,7 +58,7 @@ type Auth struct {
 func (a *Auth) Middleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if r.Header.Get("Authorization") == "" {
-			w.Header().Add("WWW-Authenticate", `Basic realm="Please provide a password", charset="UTF-8"`)
+			w.Header().Add("WWW-Authenticate", `Basic realm="1f349/cardcaldav", charset="UTF-8"`)
 			http.Error(w, "HTTP auth is required", http.StatusUnauthorized)
 			return
 		}
