@@ -1,10 +1,10 @@
 package main
 
 import (
-	"cardcaldav"
 	"context"
 	"flag"
 	"fmt"
+	"github.com/1f349/cardcaldav"
 	"github.com/charmbracelet/log"
 	"golang.org/x/term"
 	"os"

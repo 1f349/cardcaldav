@@ -1,10 +1,10 @@
 package cardcaldav
 
 import (
-	"cardcaldav/database"
 	"context"
 	"database/sql"
 	"errors"
+	"github.com/1f349/cardcaldav/database"
 	"github.com/charmbracelet/log"
 	"golang.org/x/crypto/bcrypt"
 	"net/http"
