@@ -52,7 +52,11 @@ func NewAuth(dbStr string, logger *log.Logger) *Auth {
 }
 
 type Auth struct {
-	DB *database.Queries
+	DB DbQueries
+}
+
+type DbQueries interface {
+	GetPasswordHash(ctx context.Context, username string) (string, error)
 }
 
 func (a *Auth) Middleware(next http.Handler) http.Handler {
