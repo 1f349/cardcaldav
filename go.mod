@@ -3,6 +3,7 @@ module github.com/1f349/cardcaldav
 go 1.25.0
 
 require (
+	github.com/1f349/lantana v0.0.1
 	github.com/charmbracelet/log v0.4.2
 	github.com/go-sql-driver/mysql v1.9.3
 	github.com/rs/zerolog v1.34.0

@@ -4,7 +4,7 @@ import (
 	"context"
 	"database/sql"
 	"errors"
-	"github.com/1f349/cardcaldav/database"
+	"github.com/1f349/lantana/database"
 	"github.com/charmbracelet/log"
 	"golang.org/x/crypto/bcrypt"
 	"net/http"
@@ -56,7 +56,8 @@ type Auth struct {
 }
 
 type DbQueries interface {
-	GetPasswordHash(ctx context.Context, username string) (string, error)
+	GetPassword(ctx context.Context, username string) (string, error)
+	GetMailbox(ctx context.Context, username string) (database.Mailbox, error)
 }
 
 func (a *Auth) Middleware(next http.Handler) http.Handler {
@@ -94,11 +95,19 @@ func (a *Auth) CurrentUserPrincipal(ctx context.Context) (string, error) {
 const blfCryptPrefix = "{BLF-CRYPT}"
 
 var errNotBlfCrypt = errors.New("not BLF crypt")
+var errNotActive = errors.New("not active")
 
 func (a *Auth) ValidateCredentials(ctx context.Context, un, pw string) error {
-	hash, err := a.DB.GetPasswordHash(ctx, un)
+	hash, err := a.DB.GetPassword(ctx, un)
 	if err != nil {
 		return err
+	}
+	mbox, err := a.DB.GetMailbox(ctx, un)
+	if err != nil {
+		return err
+	}
+	if mbox.Active != database.MailboxActiveTrue {
+		return errNotActive
 	}
 	if !strings.HasPrefix(hash, blfCryptPrefix) {
 		return errNotBlfCrypt
